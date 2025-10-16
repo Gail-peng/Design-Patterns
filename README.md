@@ -72,6 +72,7 @@ if __name__ == "__main__":
     print(product_b.operation())  # 输出：ConcreteProductB
 '''
 在这段代码中，create_product 方法被 @staticmethod 装饰器标记为静态方法，这是不需要通过 SimpleFactory() 创建实例就能调用该方法的核心原因。
+
 静态方法（@staticmethod）是属于类本身的方法，而非类的实例。它不需要依赖类的实例状态，也不强制要求传入 self 参数。因此，调用静态方法时无需创建类的实例，直接通过「类名。方法名」的方式即可调用。
 
 简单工厂模式中，工厂类的核心作用是封装对象的创建逻辑，本身通常不需要维护实例状态
@@ -287,6 +288,211 @@ mac_gui = create_gui(MacFactory())
 在这个例子中，抽象工厂类 GUIFactory 定义了一组用于创建控件的抽象方法，具体工厂类 WindowsFactory 和 MacFactory 分别实现了这些方法来创建具有不同样式的 Windows 和 Mac 控件。
 
 客户端代码使用不同的工厂类来创建具有不同样式的 GUI，但是它并不知道具体创建了哪些控件类。这就实现了客户端与产品实现之间的解耦。
+
+## 3、单例模式（Singleton）
+
+单例模式（Singleton）是一种创建型设计模式，其原理是确保一个类只有一个实例，并且提供了一个访问该实例的全局点。
+
+单例模式可以使用多种不同的实现方式，但它们的基本原理是相同的。通常，单例模式使用一个私有构造函数来确保只有一个对象被创建。然后，它提供了一个全局点访问该对象的方法，使得任何代码都可以访问该对象，而不必担心创建多个实例。
+
+具体来说，单例模式通常通过以下几个步骤实现：
+
+1.创建一个私有构造函数，以确保类不能从外部实例化。
+2.创建一个私有静态变量，用于存储类的唯一实例。
+3.创建一个公共静态方法，用于访问该实例。
+在公共静态方法中，如果实例不存在，则创建一个新实例并将其分配给静态变量。否则，返回现有的实例。
+
+优缺点：
+
+单例模式可以有效地避免重复的内存分配，特别是当对象需要被频繁地创建和销毁时。另外，单例模式还提供了一种简单的方式来控制全局状态，因为只有一个实例存在，可以确保任何代码都在同一个对象上运行。
+
+然而，单例模式可能导致线程安全问题。如果多个线程同时尝试访问单例实例，可能会导致竞争条件。因此，在实现单例模式时需要格外小心，并考虑到线程安全问题。
+
+以下是一个简单的Python示例，实现了单例模式的基本原理：
+
+```
+class Singleton:
+    __instance = None
+
+    def __init__(self):
+        if Singleton.__instance is not None:
+            raise Exception("This class is a singleton!")
+        else:
+            Singleton.__instance = self
+
+    @staticmethod  #此处的静态方法同上
+    def get_instance():
+        if Singleton.__instance is None:
+            Singleton()
+        return Singleton.__instance
+
+if __name__ == "__main__":
+    s1 = Singleton.get_instance()
+    s2 = Singleton.get_instance()
+
+    print(s1 is s2)  # True
+```
+实现思路：
+
+在上面的示例中，我们创建了一个名为Singleton的类，并使用__init__()方法确保只有一个实例。在__init__()方法中，我们首先检查是否已经有一个实例存在。如果是这样，我们引发一个异常，否则我们将当前实例分配给__instance属性。
+
+接下来，我们创建了一个名为get_instance()的公共静态方法，以便访问该实例。在get_instance()方法中，我们首先检查是否已经有一个实例存在。如果没有，我们将创建一个新实例，并将其分配给__instance属性。否则，我们将返回现有的实例。
+
+这种方法的主要优点是，只有一个实例被创建，可以避免重复的内存分配。另外，它提供了一个全局点访问该实例。
+
+
+## 4、建造者模式（Builder）
+
+建造者模式（Builder）是一种创建型设计模式，它允许我们按照特定顺序组装一个复杂的对象。建造者模式将对象的构造过程分解为多个步骤，每个步骤都由一个具体的构造者来完成。这样，客户端可以根据需要使用不同的构造者来构建不同的对象，而不必知道构造过程的具体细节。
+
+在 Python 中，建造者模式通常使用构造者类来封装对象的构造过程，以及指导客户端如何构建对象。
+
+具体的构造者类可以继承自一个抽象的构造者类，并实现其定义的构造方法，从而实现具体的构造过程。
+
+客户端可以选择任何一个具体构造者类来构建对象，并且也可以自定义构造者类来实现自定义的构造过程。
+
+下面是一个简单的 Python 实现，演示了如何使用建造者模式来构建一个包含多个部件的复杂对象（汽车）：
+
+```
+from abc import ABC, abstractmethod
+
+class CarBuilder(ABC):
+    @abstractmethod
+    def reset(self):
+        pass
+
+    @abstractmethod
+    def set_seats(self, number_of_seats):
+        pass
+
+    @abstractmethod
+    def set_engine(self, engine_power):
+        pass
+
+    @abstractmethod
+    def set_trip_computer(self):
+        pass
+
+    @abstractmethod
+    def set_gps(self):
+        pass
+
+class Car:
+    def __init__(self):
+        self.seats = 0
+        self.engine_power = 0
+        self.trip_computer = False
+        self.gps = False
+
+    def __str__(self):
+        return f'Car with {self.seats} seats, {self.engine_power} engine, trip computer: {self.trip_computer}, GPS: {self.gps}'
+
+class SportsCarBuilder(CarBuilder):
+    def __init__(self):
+        self.car = Car()
+
+    def reset(self):
+        self.car = Car()
+
+    def set_seats(self, number_of_seats):
+        self.car.seats = number_of_seats
+
+    def set_engine(self, engine_power):
+        self.car.engine_power = engine_power
+
+    def set_trip_computer(self):
+        self.car.trip_computer = True
+
+    def set_gps(self):
+        self.car.gps = True
+
+    def get_car(self):
+        return self.car
+
+class Director:
+    def __init__(self, builder):
+        self.builder = builder
+
+    def build_sports_car(self):
+        self.builder.reset()
+        self.builder.set_seats(2)
+        self.builder.set_engine(300)
+        self.builder.set_trip_computer()
+        self.builder.set_gps()
+        return self.builder.get_car()
+
+if __name__ == '__main__':
+    sports_car_builder = SportsCarBuilder()
+    director = Director(sports_car_builder)
+    sports_car = director.build_sports_car()
+    print(sports_car)
+```
+
+代码讲解：
+
+在这个例子中，我们定义了一个抽象的 CarBuilder 类，它有五个构造方法，分别用于重置汽车、设置座位数量、设置引擎功率、安装行车电脑和安装 GPS。
+
+SportsCarBuilder 类继承自 CarBuilder，实现了这些构造方法，并定义了一个 get_car() 方法，用于获取构建好的汽车对象。
+
+Director 类则用来指导汽车的构建过程，它接收一个具体的构造者对象，并根据需要的顺序调用构造方法来构建汽车。
+
+在主函数中，我们先创建一个 SportsCarBuilder 对象，然后使用它来构建一辆跑车。
+
+构建过程由 Director 对象来指导，并返回构建好的汽车对象。最后，我们打印这辆汽车的信息，即它的座位数量、引擎功率、是否安装行车电脑和是否安装 GPS。
+
+需要注意的是，在实际应用中，建造者模式常常会和其他设计模式一起使用，比如工厂方法模式和单例模式。此外，建造者模式还常常被用于构建复杂的 DOM 结构和 XML 文档。
+
+## 5、原型模式（Prototype）
+
+原型模式（Prototype）是一种创建型设计模式，它允许通过复制现有对象来创建新对象，而不是通过实例化类来创建对象。原型模式允许我们创建一个原型对象，然后通过克隆这个原型对象来创建新的对象，从而避免了重复的初始化操作。
+
+在 Python 中，可以使用 copy 模块中的 copy() 和 deepcopy() 函数来实现原型模式。
+
+copy() 函数执行的是浅复制，它复制对象本身，但不复制对象引用的内存空间，因此如果原型对象中包含可变对象（如列表、字典等），那么新对象和原型对象将共享这些可变对象。
+
+deepcopy() 函数则执行深复制，它会递归地复制对象及其引用的所有对象，因此新对象和原型对象不会共享任何对象。
+
+下面是一个简单的 Python 实现，演示了如何使用原型模式创建和克隆一个包含可变和不可变成员的对象：
+
+```
+import copy
+
+class Prototype:
+    def __init__(self, x, y, items):
+        self.x = x
+        self.y = y
+        self.items = items
+
+    def clone(self):
+        return copy.deepcopy(self)
+
+if __name__ == '__main__':
+    items = ['item1', 'item2', 'item3']
+    original = Prototype(1, 2, items)
+    clone = original.clone()
+
+    print(f'Original: x={original.x}, y={original.y}, items={original.items}')
+    print(f'Clone: x={clone.x}, y={clone.y}, items={clone.items}')
+
+    items.append('item4')
+    original.x = 5
+    original.y = 10
+
+    print(f'Original (updated): x={original.x}, y={original.y}, items={original.items}')
+    print(f'Clone (not updated): x={clone.x}, y={clone.y}, items={clone.items}')
+```
+代码讲解：
+
+在这个例子中，Prototype 类有三个成员：x、y 和 items。
+
+clone() 方法使用深度复制来复制对象及其所有成员。
+
+客户端代码首先创建一个原型对象，然后克隆它以创建一个新对象。
+
+接下来，客户端代码更新原型对象的成员，但是新对象不会受到影响，因为它们共享的是不同的内存空间。
+
+
+
 
 
 
