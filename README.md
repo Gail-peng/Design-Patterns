@@ -492,12 +492,527 @@ clone() 方法使用深度复制来复制对象及其所有成员。
 接下来，客户端代码更新原型对象的成员，但是新对象不会受到影响，因为它们共享的是不同的内存空间。
 
 
+## 结构型模式
+
+关注对象和类之间的组合，实现对象组合过程中的影响解耦，使得单个对象或类修改不会影响整体组合的代码
+
+### 1、适配器模式（Adapter）
+
+适配器模式（Adapter）是一种结构型设计模式，用于将一个类的接口转换为另一个类的接口。适配器模式的作用是解决两个不兼容的接口之间的兼容问题，从而使它们能够协同工作。
+
+适配器模式由三个主要组件组成：
+
+目标接口（Target Interface）：是客户端代码期望的接口。在适配器模式中，它通常由抽象类或接口表示。
+
+适配器（Adapter）：是实现目标接口的对象。适配器通过包装一个需要适配的对象，并实现目标接口来实现适配的效果。
+
+源接口（Adaptee Interface）：是需要被适配的接口。在适配器模式中，它通常由一个或多个具体类或接口表示。
+
+适配器模式通常有两种实现方式：
+
+类适配器模式：通过继承来实现适配器，从而使适配器成为源接口的子类，并实现目标接口。这种方式需要适配器能够覆盖源接口的所有方法。
+
+对象适配器模式：通过组合来实现适配器，从而使适配器持有一个源接口的对象，并实现目标接口。这种方式可以在适配器中自定义需要适配的方法，而无需覆盖源接口的所有方法。
+
+优缺点：
+
+适配器模式的优点是能够解决两个不兼容接口之间的兼容问题，并且可以使代码更加灵活和可扩展。
+
+它的缺点是需要额外的适配器对象，可能会导致代码的复杂性增加。在设计过程中，需要根据具体的场景和需求，选择最合适的适配器实现方式。
+
+下面是一个类适配器模式的 UML 类图：
+
+<img width="815" height="505" alt="image" src="https://github.com/user-attachments/assets/e0f6b781-6749-4b66-b1c6-6faeb656fd55" />
+
+```
+# 目标接口
+class Target:
+    def request(self):
+        pass
+
+# 源接口
+class Adaptee:
+    def specific_request(self):
+        pass
+
+# 类适配器
+class Adapter(Target, Adaptee):
+    def request(self):
+        self.specific_request()
+        # 其他逻辑
+
+# 对象适配器
+class Adapter2(Target):
+    def __init__(self, adaptee):
+        self._adaptee = adaptee
+
+    def request(self):
+        self._adaptee.specific_request()
+        # 其他逻辑
+
+# 客户端代码
+def client_code(target):
+    target.request()
+
+adaptee = Adaptee()
+adapter = Adapter()
+adapter2 = Adapter2(adaptee)
+
+client_code(adapter)
+client_code(adapter2
+```
+代码解释：
+
+在上面的代码中，我们首先定义了目标接口 Target 和源接口 Adaptee，然后实现了两种适配器：类适配器 Adapter 和对象适配器 Adapter2。
+
+在类适配器中，我们使用多重继承来同时继承目标接口和源接口，并实现目标接口的 request 方法。在这个方法中，我们调用源接口的 specific_request 方法，并在必要的情况下进行其他逻辑处理。
+
+在对象适配器中，我们使用组合来持有一个源接口的对象，并实现目标接口的 request 方法。在这个方法中，我们调用源接口的 specific_request 方法，并在必要的情况下进行其他逻辑处理。
+
+最后，我们定义了一个客户端代码 client_code，它接收一个目标接口的实例作为参数，并调用该实例的 request 方法。我们分别用类适配器和对象适配器来适配源接口，并将适配器传递给客户端代码进行测试。
 
 
+### 2、桥接模式（Bridge）
+
+桥接模式（Bridge）是一种结构型设计模式，旨在将抽象部分和具体实现部分分离，使它们可以独立地变化。
+
+桥接模式的原理实现基于面向对象的多态特性，其核心思想是将抽象部分和实现部分解耦，使得它们可以独立地变化而互不影响。在桥接模式中，抽象部分和实现部分分别由抽象类和实现类来表示，它们之间通过一个桥梁接口来联系。
+
+具体的实现步骤如下：
+
+定义抽象类和实现类：抽象类定义了抽象部分的接口，包含了一些基本的方法。实现类定义了实现部分的接口，包含了一些实现方法。
+
+定义桥梁接口：桥梁接口定义了抽象部分和实现部分之间的连接，它包含了一个对实现类的引用，以及一些委托方法。
+
+定义具体桥梁类：具体桥梁类继承了桥梁接口，实现了委托方法，将调用转发给实现类的方法。
+
+实例化具体桥梁类：在程序运行时，实例化具体桥梁类，并将实现类对象作为参数传递给具体桥梁类的构造函数。
+
+调用具体桥梁类的方法：在程序运行时，调用具体桥梁类的方法，具体桥梁类将委托给实现类的方法来完成具体的操作。
+
+下面是一个 Python 示例代码，演示了如何使用桥接模式实现不同形状的颜色填充：
+
+```
+# 抽象类：形状
+class Shape:
+    def __init__(self, color):
+        self.color = color
+
+    def draw(self):
+        pass
+
+# 实现类：颜色
+class Color:
+    def fill(self):
+        pass
+
+# 实现类的具体实现：红色
+class RedColor(Color):
+    def fill(self):
+        return "Red"
+
+# 实现类的具体实现：绿色
+class GreenColor(Color):
+    def fill(self):
+        return "Green"
+
+# 桥梁接口
+class Bridge:
+    def __init__(self, color):
+        self.color = color
+
+    def draw(self):
+        pass
+
+# 具体桥梁类：圆形
+class Circle(Bridge):
+    def draw(self):
+        return "Circle filled with " + self.color.fill()
+
+# 具体桥梁类：矩形
+class Rectangle(Bridge):
+    def draw(self):
+        return "Rectangle filled with " + self.color.fill()
+
+# 使用示例
+red = RedColor()
+green = GreenColor()
+circle = Circle(red)
+rectangle = Rectangle(green)
+print(circle.draw())      # 输出：Circle filled with Red
+print(rectangle.draw())   # 输出：Rectangle filled with Green
+```
+
+代码讲解：
+
+在这个示例中，Shape是抽象类，它包含了一个颜色属性和draw方法。Color是实现类，它包含了一个fill方法。RedColor和GreenColor是Color的具体实现类，它们分别实现了fill方法返回红色和绿色。
+
+Bridge是桥梁接口，它包含了一个对Color的引用。Circle和Rectangle是具体桥梁类，它们继承了Bridge，实现了draw方法，将调用转发给实现类的fill方法。
+
+在示例的最后，实例化了RedColor和GreenColor，并分别传递给Circle和Rectangle作为参数。然后调用了draw方法，输出了Circle和Rectangle的颜色填充。
+
+通过桥接模式，将抽象部分和实现部分分离开来，可以使得它们可以独立地变化而互不影响。这样就可以更加灵活地组合不同的抽象部分和实现部分，从而实现更加复杂的功能。
 
 
+### 3、组合模式（Composite）
+
+组合模式（Composite）是一种结构型设计模式，它允许你将对象组合成树形结构来表示整体-部分关系，使得客户端可以统一地处理单个对象和组合对象。
+
+该模式包含以下几个角色：
+
+抽象组件（Component）：定义了组合中所有对象共有的行为，并规定了管理子组件的方法。
+
+叶子组件（Leaf）：表示组合中的单个对象，叶子节点没有子节点。
+
+容器组件（Composite）：表示组合中的容器对象，容器节点可以包含其他容器节点和叶子节点。
+
+客户端（Client）：通过抽象组件操作组合对象。
+
+优点：
+
+使用组合模式可以使得客户端可以像处理单个对象一样处理组合对象。
+
+同时也方便了新增或删除子组件。
+
+该模式通常应用于处理树形结构数据或者嵌套的对象结构。
+
+以下是一个简单的组合模式的示例，假设我们要处理一些文件和文件夹，文件夹可以包含其他文件和文件夹，我们可以使用组合模式来表示它们之间的整体-部分关系：
+
+```
+from abc import ABC, abstractmethod
+
+class FileComponent(ABC):
+    @abstractmethod
+    def list(self):
+        pass
+
+class File(FileComponent):           # 叶子组件，表示文件
+    def __init__(self, name):
+        self.name = name
+
+    def list(self):
+        print(self.name)
+
+class Folder(FileComponent):         # 容器组件，表示文件夹
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+
+    def add(self, component):
+        self.children.append(component)
+
+    def remove(self, component):
+        self.children.remove(component)
+
+    def list(self):
+        print(self.name)
+        for child in self.children:
+            child.list()
+
+if __name__ == "__main__":
+    root = Folder("root")
+    folder1 = Folder("folder1")
+    folder2 = Folder("folder2")
+    file1 = File("file1")
+    file2 = File("file2")
+    
+    root.add(folder1)
+    root.add(folder2)
+    root.add(file1)
+    folder1.add(file2)
+    
+    root.list()
+```
+
+在上述示例中，FileComponent 类是抽象组件，定义了组合中所有对象共有的行为。File 类是叶子组件，表示文件。Folder 类是容器组件，表示文件夹，它可以包含其他文件和文件夹。
+
+客户端可以通过抽象组件对文件和文件夹进行操作，在上述示例中，我们创建了一个根节点root，包含了两个文件夹folder1和folder2以及两个文件file1和file2。客户端通过root节点列出了整个文件树的结构
+
+### 4、装饰模式（Decorator）
+
+装饰模式（Decorator）是一种结构型设计模式，它允许你在运行时为对象动态添加功能。装饰模式是一种替代继承的方式，它通过将对象放入包装器对象中来实现这一点。这种模式是开放封闭原则的一种具体实现方式。
+
+在装饰模式中，有一个抽象组件（Component）类，它定义了基本的操作方法。
+
+有一个具体组件（ConcreteComponent）类，它实现了抽象组件类中定义的操作方法。
+
+还有一个装饰器（Decorator）类，它也实现了抽象组件类中定义的操作方法，并且它包含一个指向抽象组件类的引用。
+
+此外，还有一个具体装饰器（ConcreteDecorator）类，它扩展了装饰器类，以实现额外的功能。
+
+装饰模式的核心思想是，在不改变原有类的情况下，通过包装原有类来扩展其功能。这使得我们可以在运行时动态地添加功能，而不需要在编译时修改代码。
+
+以下是一个装饰模式的 UML 类图：
+
+<img width="720" height="419" alt="image" src="https://github.com/user-attachments/assets/83eff27c-1690-4c72-bcbc-a61131ee7ff2" />
+
+Component: 抽象组件类，定义了基本的操作方法。
+
+Decorator: 装饰器类，实现了抽象组件类中定义的操作方法，并且它包含一个指向抽象组件类的引用。
+
+ConcreteComponent: 具体组件类，实现了抽象组件类中定义的操作方法。
+
+ConcreteDecorator: 具体装饰器类，扩展了装饰器类，以实现额外的功能。
+
+温馨提示：
+
+在装饰模式中，可以通过组合的方式来添加多个装饰器，从而实现对对象的多次装饰。
+
+同时，装饰器对象可以嵌套在其他装饰器对象内部，从而形成一个装饰器对象的树形结构，这种结构称为装饰器链。
+
+在执行操作时，装饰器对象会按照一定的顺序递归地调用装饰器链中的操作方法。
+
+下面是一个装饰模式的 Python 实现示例：
+```
+from abc import ABC, abstractmethod
+
+# 定义抽象组件
+class Component(ABC):
+    @abstractmethod
+    def operation(self):
+        pass
+
+# 定义具体组件
+class ConcreteComponent(Component):
+    def operation(self):
+        return "ConcreteComponent"
+
+# 定义抽象装饰器
+class Decorator(Component):
+    def __init__(self, component: Component):
+        self._component = component
+
+    @abstractmethod
+    def operation(self):
+        pass
+
+# 定义具体装饰器 A
+class ConcreteDecoratorA(Decorator):
+    def operation(self):
+        return f"ConcreteDecoratorA({self._component.operation()})"
+
+# 定义具体装饰器 B
+class ConcreteDecoratorB(Decorator):
+    def operation(self):
+        return f"ConcreteDecoratorB({self._component.operation()})"
+
+if __name__ == "__main__":
+    component = ConcreteComponent()
+    decoratorA = ConcreteDecoratorA(component)
+    decoratorB = ConcreteDecoratorB(decoratorA)
+    print(decoratorB.operation())
+```
+代码讲解：
+
+在上面的实现中，我们首先定义了一个抽象组件 Component，其中包含了一个抽象方法 operation，用于定义基本操作。
+
+接着，我们定义了具体组件 ConcreteComponent，它是 Component 的一个实现类，实现了 operation 方法。
+
+然后，我们定义了抽象装饰器 Decorator，它也是 Component 的一个实现类，其中包含了一个指向抽象组件 Component 的引用。同时，它也是一个抽象类，其中包含了一个抽象方法 operation，用于定义装饰器的操作。
+
+接着，我们定义了具体装饰器 A 和 B，它们都继承自 Decorator 类。在 ConcreteDecoratorA 和 ConcreteDecoratorB 中，我们重写了 operation 方法，并在其中调用了 self._component.operation() 方法，即对 Component 进行了包装，以实现对组件的功能扩展。
+
+最后，在主函数中，我们创建了一个 ConcreteComponent 对象，并用具体装饰器 A 和 B 对它进行了多次包装，从而实现了对组件的多次功能扩展。最终，调用 decoratorB.operation() 方法时，输出了 ConcreteDecoratorB(ConcreteDecoratorA(ConcreteComponent))，即对 
+
+ConcreteComponent 对象进行了两次包装，并返回了最终的结果。
+
+### 5、外观模式（Facade）
+
+外观模式（Facade）是一种结构型设计模式，它提供了一个简单的接口，隐藏了一个或多个复杂的子系统的复杂性。外观模式可以使得客户端只需要与外观对象进行交互，而不需要与子系统中的每个对象直接交互，从而降低了客户端的复杂性，提高了系统的可维护性。
+
+实现思路：
+
+外观模式的核心思想是，提供一个简单的接口，包装一个或多个复杂的子系统，隐藏其复杂性，并向客户端提供一个更简单、更易于使用的接口。
+
+在外观模式中，外观对象扮演着客户端和子系统之间的协调者，它负责将客户端的请求转发给子系统中的相应对象，并将其结果返回给客户端。
+
+外观模式的优点包括：
+
+简化了客户端的使用：外观模式为客户端提供了一个简单的接口，使得客户端不需要了解子系统中的每个对象及其功能，从而降低了客户端的复杂性。
+
+隐藏了子系统的复杂性：外观模式将子系统的复杂性隐藏在外观对象之后，使得客户端只需要与外观对象进行交互，从而提高了系统的可维护性。
+
+提高了灵活性：由于客户端只与外观对象进行交互，因此可以在不影响客户端的情况下修改或替换子系统中的对象。
+
+外观模式的缺点包括：
+
+不能完全隐藏子系统的复杂性：外观模式只是将子系统的复杂性隐藏在外观对象之后，但仍然需要客户端了解外观对象的接口和使用方式。
+
+可能会引入不必要的复杂性：如果外观对象需要处理复杂的逻辑，就会引入额外的复杂性，从而降低系统的可维护性。
+
+以下是一个使用外观模式的示例，假设我们有一个音乐播放器，它可以播放MP3和FLAC两种格式的音乐。不同格式的音乐播放需要不同的解码器，同时还需要加载音乐文件和设置音量等操作。我们可以使用外观模式封装这些复杂的操作，提供一个简单易用的接口给客户端使用：
+
+```
+class MusicPlayer:
+    def __init__(self):
+        self.mp3_player = MP3Player()
+        self.flac_player = FLACPlayer()
+
+    def play_mp3(self, file_path, volume):
+        self.mp3_player.load(file_path)
+        self.mp3_player.set_volume(volume)
+        self.mp3_player.play()
+
+    def play_flac(self, file_path, volume):
+        self.flac_player.load(file_path)
+        self.flac_player.set_volume(volume)
+        self.flac_player.play()
 
 
+class MP3Player:
+    def load(self, file_path):
+        print(f"Loading MP3 file from {file_path}")
+
+    def set_volume(self, volume):
+        print(f"Setting MP3 volume to {volume}")
+
+    def play(self):
+        print("Playing MP3 music")
 
 
+class FLACPlayer:
+    def load(self, file_path):
+        print(f"Loading FLAC file from {file_path}")
 
+    def set_volume(self, volume):
+        print(f"Setting FLAC volume to {volume}")
+
+    def play(self):
+        print("Playing FLAC music")
+```
+代码讲解：
+
+在上述示例中，MusicPlayer 类是外观类，它封装了 MP3 和 FLAC 播放器对象。play_mp3 和 play_flac 方法是外观类中的简单接口，它们将客户端的请求转发给相应的播放器对象。
+
+客户端只需要使用MusicPlayer类就可以进行MP3和FLAC的播放，而不需要了解播放器的具体实现。如果需要修改或替换播放器中的对象，只需要修改外观类的实现即可，而不会影响客户端的使用。
+
+### 6、享元模式（Flyweight）
+
+享元模式（Flyweight）是一种结构型设计模式，它通过共享对象来尽可能减少内存使用和对象数量。在享元模式中，存在两种对象：内部状态（Intrinsic State）和外部状态（Extrinsic State）。内部状态指对象的共享部分，不随环境改变而改变；外部状态指对象的非共享部分，会随环境改变而改变。
+
+实现思路：
+
+享元模式的核心思想是尽量重用已经存在的对象，减少对象的创建和销毁，从而提高性能和节省内存。
+
+它通常适用于需要大量创建对象的场景，但又不能因为对象过多而导致内存不足或性能降低的情况。
+
+下面是一个简单的享元模式的示例，假设我们有一个字符工厂，它可以创建不同的字符对象。在实现字符对象时，我们发现有一些字符会被频繁使用，而且它们的状态是不变的，例如空格、逗号、句号等标点符号。因此，我们可以将这些字符设计为享元对象，通过共享来节省内存。
+
+```
+class CharacterFactory:
+    def __init__(self):
+        self.characters = {}
+
+    def get_character(self, character):
+        if character in self.characters:
+            return self.characters[character]
+        else:
+            new_character = Character(character)
+            self.characters[character] = new_character
+            return new_character
+
+class Character:
+    def __init__(self, character):
+        self.character = character
+
+    def render(self, font):
+        print(f"Rendering character {self.character} in font {font}")
+
+# 创建字符工厂
+factory = CharacterFactory()
+
+# 获取不同的字符
+char1 = factory.get_character("A")
+char2 = factory.get_character("B")
+char3 = factory.get_character(" ")
+char4 = factory.get_character(",")
+char5 = factory.get_character(" ")
+char6 = factory.get_character(".")
+
+# 渲染不同的字符
+char1.render("Arial")
+char2.render("Times New Roman")
+char3.render("Arial")
+char4.render("Times New Roman")
+char5.render("Arial")
+char6.render("Times New Roman")
+```
+代码讲解：
+
+在上述示例中，我们创建了一个CharacterFactory类来管理字符对象。当客户端需要获取一个字符时，可以调用get_character方法。如果该字符已经被创建过了，就直接返回共享的对象；否则，创建一个新的对象并将其保存到工厂中，以备下次使用。
+
+字符对象Character有一个render方法，用于渲染该字符。在实际使用中，我们可能需要给不同的字符设置不同的字体，这里只是为了演示方便，用字符串代替了字体对象。
+
+通过享元模式，我们可以共享多个相同的字符对象，从而减少内存使用和对象数量。在这个例子中，如果没有使用享元模式，我们可能需要创建多个空格、逗号和句号对象，而这些对象的状态都是不变的，这样就会导致内存浪费。通过使用享元模式，我们可以将这些相同的对象共享起来，避免重复创建
+
+对象，从而提高性能和节省内存。
+
+### 7、代理模式（Proxy）
+
+代理模式（Proxy）是一种结构型设计模式，***它允许在访问对象时添加一些额外的行为***。代理类充当客户端和实际对象之间的中介。客户端通过代理来访问实际对象，代理在访问实际对象前后执行一些额外的操作，例如权限检查、缓存等。
+
+代理模式包含三个角色：
+
+抽象主题（Subject）：抽象主题定义了真实主题和代理主题的公共接口
+
+真实主题（Real Subject）：真实主题是实际执行操作的对象
+
+代理主题（Proxy Subject）：代理主题通过实现抽象主题接口，控制对真实主题的访问。
+
+<img width="592" height="136" alt="image" src="https://github.com/user-attachments/assets/5137f1d1-d72f-4219-9f4e-68e03d90d910" />
+
+在上面的类图中，Subject 是抽象主题，定义了客户端和真实主题之间的接口，RealSubject 是真实主题，实现了抽象主题定义的接口，ProxySubject 是代理主题，也实现了抽象主题定义的接口，并且内部持有一个 RealSubject 对象，以便在需要时代理访问 RealSubject 对象。
+
+下面是一个 Python 实现的示例，假设我们有一个邮件服务器，我们需要实现一个邮件客户端程序，但我们不想直接连接到邮件服务器，因为这样可能会存在一些风险，我们想通过代理来连接邮件服务器，以此增加一些安全性：
+
+```
+# 抽象主题
+class Email:
+    def send(self, message):
+        pass
+
+# 真实主题
+class EmailServer(Email):
+    def send(self, message):
+        print(f'Sending email: {message}')
+
+# 代理主题
+class EmailProxy(Email):
+    def __init__(self, email_server):
+        self.email_server = email_server
+    
+    def send(self, message):
+        if self.is_allowed_to_send(message):
+            self.email_server.send(message)
+            self.log(message)
+        else:
+            print('Not allowed to send email')
+    
+    def is_allowed_to_send(self, message):
+        # Check if user is allowed to send the email
+        return True
+    
+    def log(self, message):
+        # Log the email to a file
+        print(f'Logging email: {message}')
+
+# 客户端
+if __name__ == '__main__':
+    email_server = EmailServer()
+    email_proxy = EmailProxy(email_server)
+    email_proxy.send('Hello, world!')
+```
+
+代理讲解：
+
+在上面的示例中，Email 是抽象主题，定义了发送邮件的方法 send()。
+
+EmailServer 是真实主题，实现了 send() 方法来发送邮件。
+
+EmailProxy 是代理主题，它实现了 send() 方法，并且内部持有一个 EmailServer 对象，以便在需要时代理访问 EmailServer 对象。
+
+在 send() 方法中，它首先检查是否允许发送邮件，然后调用 EmailServer对象的 send() 方法来发送邮件，并在发送完成后记录日志。
+
+最后，我们在客户端中创建了一个 EmailServer 对象和一个EmailProxy 对象，然后通过 EmailProxy 对象来发送邮件。
+
+需要注意的是，在代理模式中，代理主题和真实主题必须实现同样的接口，因此代理主题必须是抽象主题的子类。此外，代理主题还可以通过实现额外的方法来增加一些附加的功能
