@@ -19,7 +19,11 @@
 
 7.组合/聚合复用原则（使用组合等方法实现代码复用）：尽量使用组合或聚合关系，而不是继承关系来达到代码复用的目的。
 
+
 ## 创建型模式
+
+创建型模式主要关注于处理**对象的创建问题**
+
 
 ### 1、工厂模式（Factory Method）
 
@@ -178,6 +182,7 @@ ABC是所有抽象基类的基类（父类）。一个类如果继承自ABC，�
 
 2.***强制子类必须重写该方法***：如果子类继承了抽象基类但没有实现所有抽象方法，那么子类也会被视为抽象基类，无法实例化。
 
+
 ## 2、抽象工厂模式（AbstractFactory）
 
 抽象工厂模式（Abstract Factory）是一种创建型设计模式，它提供一个接口，用于创建一系列相关或相互依赖的对象，而不需要指定它们的具体类。
@@ -288,6 +293,7 @@ mac_gui = create_gui(MacFactory())
 在这个例子中，抽象工厂类 GUIFactory 定义了一组用于创建控件的抽象方法，具体工厂类 WindowsFactory 和 MacFactory 分别实现了这些方法来创建具有不同样式的 Windows 和 Mac 控件。
 
 客户端代码使用不同的工厂类来创建具有不同样式的 GUI，但是它并不知道具体创建了哪些控件类。这就实现了客户端与产品实现之间的解耦。
+
 
 ## 3、单例模式（Singleton）
 
@@ -442,6 +448,7 @@ Director 类则用来指导汽车的构建过程，它接收一个具体的构�
 
 需要注意的是，在实际应用中，建造者模式常常会和其他设计模式一起使用，比如工厂方法模式和单例模式。此外，建造者模式还常常被用于构建复杂的 DOM 结构和 XML 文档。
 
+
 ## 5、原型模式（Prototype）
 
 原型模式（Prototype）是一种创建型设计模式，它允许通过复制现有对象来创建新对象，而不是通过实例化类来创建对象。原型模式允许我们创建一个原型对象，然后通过克隆这个原型对象来创建新的对象，从而避免了重复的初始化操作。
@@ -494,7 +501,8 @@ clone() 方法使用深度复制来复制对象及其所有成员。
 
 ## 结构型模式
 
-关注对象和类之间的组合，实现对象组合过程中的影响解耦，使得单个对象或类修改不会影响整体组合的代码
+关注**对象和类之间的组合**，实现对象**组合过程中的影响解耦**，使得单个对象或类修改不会影响整体组合的代码
+
 
 ### 1、适配器模式（Adapter）
 
@@ -728,6 +736,8 @@ if __name__ == "__main__":
 
 客户端可以通过抽象组件对文件和文件夹进行操作，在上述示例中，我们创建了一个根节点root，包含了两个文件夹folder1和folder2以及两个文件file1和file2。客户端通过root节点列出了整个文件树的结构
 
+
+
 ### 4、装饰模式（Decorator）
 
 装饰模式（Decorator）是一种结构型设计模式，它允许你在运行时为对象动态添加功能。装饰模式是一种替代继承的方式，它通过将对象放入包装器对象中来实现这一点。这种模式是开放封闭原则的一种具体实现方式。
@@ -816,6 +826,7 @@ if __name__ == "__main__":
 
 ConcreteComponent 对象进行了两次包装，并返回了最终的结果。
 
+
 ### 5、外观模式（Facade）
 
 外观模式（Facade）是一种结构型设计模式，它提供了一个简单的接口，隐藏了一个或多个复杂的子系统的复杂性。外观模式可以使得客户端只需要与外观对象进行交互，而不需要与子系统中的每个对象直接交互，从而降低了客户端的复杂性，提高了系统的可维护性。
@@ -886,6 +897,7 @@ class FLACPlayer:
 
 客户端只需要使用MusicPlayer类就可以进行MP3和FLAC的播放，而不需要了解播放器的具体实现。如果需要修改或替换播放器中的对象，只需要修改外观类的实现即可，而不会影响客户端的使用。
 
+
 ### 6、享元模式（Flyweight）
 
 享元模式（Flyweight）是一种结构型设计模式，它通过共享对象来尽可能减少内存使用和对象数量。在享元模式中，存在两种对象：内部状态（Intrinsic State）和外部状态（Extrinsic State）。内部状态指对象的共享部分，不随环境改变而改变；外部状态指对象的非共享部分，会随环境改变而改变。
@@ -946,6 +958,7 @@ char6.render("Times New Roman")
 通过享元模式，我们可以共享多个相同的字符对象，从而减少内存使用和对象数量。在这个例子中，如果没有使用享元模式，我们可能需要创建多个空格、逗号和句号对象，而这些对象的状态都是不变的，这样就会导致内存浪费。通过使用享元模式，我们可以将这些相同的对象共享起来，避免重复创建
 
 对象，从而提高性能和节省内存。
+
 
 ### 7、代理模式（Proxy）
 
@@ -1016,3 +1029,234 @@ EmailProxy 是代理主题，它实现了 send() 方法，并且内部持有一�
 最后，我们在客户端中创建了一个 EmailServer 对象和一个EmailProxy 对象，然后通过 EmailProxy 对象来发送邮件。
 
 需要注意的是，在代理模式中，代理主题和真实主题必须实现同样的接口，因此代理主题必须是抽象主题的子类。此外，代理主题还可以通过实现额外的方法来增加一些附加的功能
+
+
+## 行为型模式
+
+行为型模式关注**对象之间的交互、通信和控制流**，大多数行为型模式基于组合和委托，而不是继承
+
+
+### 1、职任链模式（Chain of Responsibility）
+
+职责链模式（Chain of Responsibility）是一种行为型设计模式，它通过将请求的**发送者和接收者解耦**，从而使多个对象都有机会处理这个请求。
+
+实现思路：
+
+在职责链模式中，我们定义一系列的处理器对象，每个处理器对象都包含一个对下一个处理器对象的引用。
+
+当请求从客户端发送到处理器对象时，**第一个处理器对象会尝试处理请求**，如果它**不能处理请求，则将请求传递给下一个处理器对象**，以此类推，直到请求被处理或者所有的处理器对象都不能处理请求。
+
+优缺点：
+
+职责链模式的优点是它可以灵活地配置处理器对象的顺序和组合，从而满足不同的处理需求。它还可以将请求的发送者和接收者解耦，从而提高系统的灵活性和可扩展性。
+
+职责链模式的缺点是如果处理器对象过多或者处理器对象之间的关系过于复杂，可能会导致系统的维护难度增加。
+
+职责链模式通常涉及以下角色：
+
+处理器接口（Handler Interface）：定义处理器对象的接口，包含处理请求的方法和对下一个处理器对象的引用。
+
+具体处理器类（Concrete Handlers）：实现处理器接口，处理请求或将请求传递给下一个处理器对象。
+
+客户端（Client）：创建处理器对象的链，将请求发送给链的第一个处理器对象。
+
+```
+# 1、定义处理器接口：
+
+class Handler:
+    def set_next(self, handler):
+        pass
+
+    def handle(self, request):
+        pass
+```
+
+```
+# 2、实现具体处理器类：
+
+class AbstractHandler(Handler):
+    def __init__(self):
+        self._next_handler = None
+
+    def set_next(self, handler):
+        self._next_handler = handler
+        return handler
+
+    def handle(self, request):
+        if self._next_handler:
+            return self._next_handler.handle(request)
+        return None
+
+class ConcreteHandler1(AbstractHandler):
+    def handle(self, request):
+        if request == "request1":
+            return "Handled by ConcreteHandler1"
+        else:
+            return super().handle(request)
+
+class ConcreteHandler2(AbstractHandler):
+    def handle(self, request):
+        if request == "request2":
+            return "Handled by ConcreteHandler2"
+        else:
+            return super().handle(request)
+
+class ConcreteHandler3(AbstractHandler):
+    def handle(self, request):
+        if request == "request3":
+            return "Handled by ConcreteHandler3"
+        else:
+            return super().handle(request)
+```
+
+```
+# 3、客户端创建处理器对象的链：
+
+handler1 = ConcreteHandler1()
+handler2 = ConcreteHandler2()
+handler3 = ConcreteHandler3()
+
+handler1.set_next(handler2).set_next(handler3)
+
+# 发送请求
+requests = ["request1", "request2", "request3", "request4"]
+for request in requests:
+    response = handler1.handle(request)
+    if response:
+        print(response)
+    else:
+        print(f"{request} was not handled")
+```
+
+代码讲解：
+
+上面的示例中，我们定义了一个处理器接口 Handler，其中包含 set_next 和 handle 方法。
+
+我们还定义了一个抽象处理器类 AbstractHandler，它实现了 set_next 和 handle 方法，其中 handle 方法调用了下一个处理器对象的 handle 方法。
+
+我们还实现了三个具体的处理器类 ConcreteHandler1、ConcreteHandler2 和 ConcreteHandler3，它们分别实现了自己的 handle 方法。
+
+客户端创建处理器对象的链，将处理器对象按照需要连接起来，然后将请求发送给链的第一个处理器对象，处理器对象将请求进行处理或者将请求传递给下一个处理器对象，直到请求被处理或者没有处理器对象能够处理请求。
+
+在这个例子中，当请求为 "request1"、"request2"、"request3" 时，请求会被相应的处理器对象处理；当请求为 "request4" 时，没有处理器对象能够处理该请求，因此该请求未被处理。
+
+总的来说，职责链模式可以使多个对象都有机会处理请求，并且可以灵活地配置处理器对象的顺序和组合，从而提高系统的灵活性和可扩展性。
+
+
+### 2、命令模式（Command）
+
+命令模式（Command）是一种行为型设计模式，它将**请求封装成一个对象**，从而使您可以**将不同的请求与其请求的接收者分开**。这种模式的目的是**通过将请求发送者和请求接收者解耦**来实现请求的发送、执行和撤销等操作。
+
+实现思路：
+
+在命令模式中，我们定义一个 Command 接口，该接口包含一个 execute 方法，用于执行命令。
+
+我们还定义了一个 Invoker 类，它用于发送命令，可以接受一个 Command 对象，并在需要时调用该对象的 execute 方法。
+
+我们还定义了一个 Receiver 类，它实际执行命令，包含一些特定于应用程序的业务逻辑。
+
+命令模式涉及以下角色：
+
+**Command 接口**：定义了一个执行命令的方法 execute。
+
+**具体命令类（Concrete Command）**：实现了 Command 接口，实现 execute 方法，包含一个接收者对象，执行具体的业务逻辑。
+
+**Invoker 类**：负责发送命令，它包含一个 Command 对象，可以在需要时调用该对象的 execute 方法。
+
+**Receiver 类**：包含一些特定于应用程序的业务逻辑，实际执行命令。
+
+```
+# 1、定义 Command 接口：
+
+from abc import ABC, abstractmethod
+
+class Command(ABC):
+    @abstractmethod
+    def execute(self):
+        pass
+```
+
+```
+# 2、实现具体命令类：
+
+class LightOnCommand(Command):
+    def __init__(self, light):
+        self.light = light
+
+    def execute(self):
+        self.light.turn_on()
+
+class LightOffCommand(Command):
+    def __init__(self, light):
+        self.light = light
+
+    def execute(self):
+        self.light.turn_off()
+
+```
+
+```
+# 3、定义 Invoker 类：
+
+class RemoteControl:
+    def __init__(self):
+        self.commands = []
+
+    def add_command(self, command):
+        self.commands.append(command)
+
+    def execute_commands(self):
+        for command in self.commands:
+            command.execute()
+```
+
+```
+# 4、定义 Receiver 类：
+
+class Light:
+    def turn_on(self):
+        print("The light is on")
+
+    def turn_off(self):
+        print("The light is off")
+```
+
+```
+# 5、创建并使用命令：
+
+light = Light()
+
+remote_control = RemoteControl()
+remote_control.add_command(LightOnCommand(light))
+remote_control.add_command(LightOffCommand(light))
+
+remote_control.execute_commands()
+```
+
+代码解释：
+
+在这个例子中，我们首先定义了一个 Command 接口，该接口包含 execute 方法。然后，我们定义了两个具体命令类 LightOnCommand 和 LightOffCommand，它们实现了 Command 接口，并包含一个接收者对象 Light，实现了执行具体的业务逻辑。
+
+我们还定义了一个 Invoker 类 RemoteControl，它包含一个 Command 对象的列表，并提供了一个 add_command 方法用于添加 Command 对象。execute_commands 方法用于在需要时调用 Command 对象的 execute 方法。
+
+最后，我们定义了一个 Receiver 类 Light，它包含一些特定于应用程序的业务逻辑，实际执行命令。
+
+在客户端代码中，我们创建了一个 Light 对象和一个 RemoteControl 对象。我们将 LightOnCommand 和 LightOffCommand 对象添加到 RemoteControl 对象的命令列表中，然后调用 execute_commands 方法来执行这些命令。
+
+当我们执行这个程序时，它将输出以下内容：
+
+The light is on
+
+The light is off
+
+这是因为我们创建了一个 Light 对象，然后使用 LightOnCommand 和 LightOffCommand 对象分别打开和关闭该对象。通过将**命令对象和命令的接收者对象分开**，我们可以**轻松地添加、删除和替换命令**，同时也使得程序更加灵活和可扩展。
+
+总的来说，命令模式提供了一种通过将请求封装成对象来实现请求的发送、执行和撤销的方法，从而使得**命令对象和命令接收者对象解耦**，提高程序的灵活性和可扩展性。
+
+
+
+
+
+
+
+
