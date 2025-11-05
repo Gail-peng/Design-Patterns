@@ -1254,6 +1254,197 @@ The light is off
 总的来说，命令模式提供了一种通过将请求封装成对象来实现请求的发送、执行和撤销的方法，从而使得**命令对象和命令接收者对象解耦**，提高程序的灵活性和可扩展性。
 
 
+### 3、解释器模式（Interpreter）
+
+解释器模式（Interpreter Pattern）是一种行为型设计模式，它定义了一种**语言文法，以及一个解释器，用于解释该语言中的句子**。解释器模式通常用于**解决特定类型的问题**，例如解释计算器表达式，SQL 查询语句等。
+
+解释器模式包括三个核心角色：
+
+Context（上下文）：它是解释器的运行环境。它存储解释器所需的一些全局信息。
+
+Abstract Expression（抽象表达式）：它是定义所有表达式的接口，通常包含解释方法 interpret()。
+
+Concrete Expression（具体表达式）：它实现抽象表达式接口，用于解释特定类型的表达式。
+
+```
+class Context:
+    def __init__(self):
+        self._variables = {}
+
+    def set_variable(self, name, value):
+        self._variables[name] = value
+
+    def get_variable(self, name):
+        return self._variables.get(name)
+
+
+class Expression:
+    def interpret(self, context):
+        pass
+
+
+class VariableExpression(Expression):
+    def __init__(self, name):
+        self._name = name
+
+    def interpret(self, context):
+        return context.get_variable(self._name)
+
+
+class ConstantExpression(Expression):
+    def __init__(self, value):
+        self._value = value
+
+    def interpret(self, context):
+        return self._value
+
+
+class AddExpression(Expression):
+    def __init__(self, left, right):
+        self._left = left
+        self._right = right
+
+    def interpret(self, context):
+        return self._left.interpret(context) + self._right.interpret(context)
+
+
+class SubtractExpression(Expression):
+    def __init__(self, left, right):
+        self._left = left
+        self._right = right
+
+    def interpret(self, context):
+        return self._left.interpret(context) - self._right.interpret(context)
+
+if __name__ =="__main__":
+    # 测试代码
+    context = Context()
+    a = ConstantExpression(1)
+    b = ConstantExpression(2)
+    c = ConstantExpression(3)
+    x = VariableExpression('x')
+    y = VariableExpression('y')
+
+    context.set_variable('x', 10)
+    context.set_variable('y', 5)
+
+    # 1 + 2 + 3 = 6
+    expression = AddExpression(AddExpression(a, b), c)
+    result = expression.interpret(context)
+    print(result)
+
+    # 10 - 2 + 5 = 13
+    expression = AddExpression(SubtractExpression(x, b), y)
+    result = expression.interpret(context)
+    print(result)
+```
+
+代码解释：
+
+在上面的实现中，我们定义了一个 Context 类来表示解释器的运行环境，它存储解释器所需的一些全局信息。
+
+Expression 类是抽象表达式类，包含一个 interpret 方法用于解释表达式。VariableExpression 和 ConstantExpression 类是具体表达式类，用于解释变量和常量。
+
+AddExpression 和 SubtractExpression 类是具体表达式类，用于解释加法和减法表达式。
+
+
+### 4、迭代器模式（Iterator）
+
+迭代器模式（Iterator）是一种行为型设计模式，它允许你在**不暴露集合底层实现的情况下遍历集合中的所有元素**。
+
+实现思路：
+
+在迭代器模式中，集合类（如列表、树等）将遍历操作委托给一个迭代器对象，而不是直接实现遍历操作。
+
+迭代器对象负责实现遍历操作，以及保存当前遍历位置等状态。
+
+这样，集合类就可以将遍历操作与集合底层实现解耦，从而使得集合类更加简单、灵活和易于维护。
+
+迭代器模式通常由以下几个角色组成：
+
+**迭代器（Iterator）**：定义了迭代器的接口，包含用于遍历集合元素的方法，如 next()、has_next() 等。
+
+**具体迭代器（ConcreteIterator）**：实现了迭代器接口，负责实现迭代器的具体遍历逻辑，以及保存当前遍历位置等状态。
+
+**集合（Aggregate）**：定义了集合的接口，包含用于获取迭代器对象的方法，如 create_iterator() 等。
+
+**具体集合（ConcreteAggregate）**：实现了集合接口，负责创建具体迭代器对象，以便遍历集合中的元素。
+
+迭代器模式的优缺点包括：
+
+将遍历操作与集合底层实现解耦，使得集合类更加灵活和易于维护。
+
+简化了集合类的接口，使得集合类更加简单明了。
+
+提供了对不同类型的集合统一遍历的机制，使得算法的复用性更加高。
+
+迭代器模式的缺点是，由于迭代器对象需要保存遍历位置等状态，因此它可能会占用比较大的内存。此外，由于迭代器对象需要负责遍历逻辑，因此它可能会变得比较复杂。
+
+以下是迭代器模式的一个简单示例，实现了一个列表类和一个列表迭代器类：
+
+```
+from abc import ABC, abstractmethod
+
+# 抽象迭代器类
+class Iterator(ABC):
+    @abstractmethod
+    def has_next(self):
+        pass
+
+    @abstractmethod
+    def next(self):
+        pass
+
+# 具体迭代器类
+class ConcreteIterator(Iterator):
+    def __init__(self, data):
+        self.data = data
+        self.index = 0
+
+    def has_next(self):
+        return self.index < len(self.data)
+
+    def next(self):
+        if self.has_next():
+            value = self.data[self.index]
+            self.index += 1
+            return value
+
+# 抽象聚合类
+class Aggregate(ABC):
+    @abstractmethod
+    def create_iterator(self):
+        pass
+
+# 具体聚合类
+class ConcreteAggregate(Aggregate):
+    def __init__(self, data):
+        self.data = data
+
+    def create_iterator(self):
+        return ConcreteIterator(self.data)
+
+# 测试
+if __name__ == "__main__":
+    data = [1, 2, 3, 4, 5]
+    aggregate = ConcreteAggregate(data)
+    iterator = agg
+```
+
+代码解释：
+
+以上代码中，我们首先定义了抽象迭代器类 Iterator，其中定义了两个抽象方法 has_next 和 next，分别用于判断是否还有下一个元素和返回下一个元素。然后，我们定义了具体迭代器类 ConcreteIterator，它包含了一个数据列表 data 和一个指针 index，它实现了 has_next 和 next 方法。
+
+接着，我们定义了抽象聚合类 Aggregate，其中定义了一个抽象方法 create_iterator，用于创建迭代器对象。然后，我们定义了具体聚合类 ConcreteAggregate，它包含了一个数据列表 data，它实现了 create_iterator 方法，返回一个 ConcreteIterator 对象。
+
+最后，在测试代码中，我们创建了一个数据列表 data，然后创建了一个具体聚合对象 aggregate，并通过 create_iterator 方法创建了一个具体迭代器对象 iterator，然后使用 while 循环遍历该聚合对象中的各个元素，打印出每个元素的值。
+
+这样，迭代器模式的基本结构就完成了。我们可以通过定义不同的聚合类和迭代器类来实现不同的聚合对象和迭代方式。这样，迭代器模式可以提高程序的灵活性和可扩展性。
+
+
+
+
+
 
 
 
