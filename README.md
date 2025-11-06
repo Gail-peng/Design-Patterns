@@ -1442,6 +1442,92 @@ if __name__ == "__main__":
 这样，迭代器模式的基本结构就完成了。我们可以通过定义不同的聚合类和迭代器类来实现不同的聚合对象和迭代方式。这样，迭代器模式可以提高程序的灵活性和可扩展性。
 
 
+### 5、中介者模式（Mediator）
+
+中介者模式（Mediator）是一种行为型设计模式，它用于将**多个对象之间的交互解耦**，从而使得**对象之间的通信更加简单和灵活**。
+
+实现思路：
+
+在中介者模式中，**多个对象之间不直接相互通信，而是通过一个中介者对象进行通信。**
+
+这样，每个对象只需要和中介者对象通信，而不需要知道其他对象的存在。
+
+中介者对象负责协调各个对象之间的交互，使得系统更加灵活和易于维护。
+
+中介者模式通常由以下几个角色组成：
+
+抽象中介者（Mediator）：定义了各个同事对象之间交互的接口，它通常包含一个或多个抽象方法，用于定义各种交互操作。
+
+具体中介者（ConcreteMediator）：实现了抽象中介者接口，负责协调各个同事对象之间的交互关系。
+
+抽象同事类（Colleague）：定义了各个同事对象的接口，包含一个指向中介者对象的引用，以便与中介者进行通信。
+
+具体同事类（ConcreteColleague）：实现了抽象同事类的接口，负责实现各自的行为，并且需要和中介者对象进行通信。
+
+中介者模式的优缺点包括：
+
+解耦了各个对象之间的交互关系，使得系统更加灵活和易于维护。
+
+降低了系统的复杂度，使得各个对象之间的交互变得简单明了。
+
+可以集中管理各个对象之间的交互关系，从而提高系统的可维护性和可扩展性。
+
+中介者模式的缺点是，由于**中介者对象需要负责协调各个同事对象之间的交互关系，因此它的职责可能会变得非常复杂**。另外，由于中介者对象需要了解各个同事对象之间的交互关系，因此它可能会变得比较庞大。
+
+下面是一个简单的中介者模式的 Python 实现，该实现使用一个聊天室作为中介者，多个用户作为同事类：
+
+```
+from typing import List
+
+class User:
+    def __init__(self, name: str, mediator):
+        self.name = name
+        self.mediator = mediator
+
+    def send_message(self, message: str):
+        self.mediator.send_message(message, self)
+
+    def receive_message(self, message: str):
+        print(f"{self.name} received message: {message}")
+
+class ChatRoom:
+    def __init__(self):
+        self.users: List[User] = []
+
+    def add_user(self, user: User):
+        self.users.append(user)
+
+    def send_message(self, message: str, sender: User):
+        for user in self.users:
+            if user != sender:
+                user.receive_message(f"{sender.name}: {message}")
+
+if __name__ == '__main__':
+    chat_room = ChatRoom()
+
+    alice = User("Alice", chat_room)
+    bob = User("Bob", chat_room)
+    charlie = User("Charlie", chat_room)
+
+    chat_room.add_user(alice)
+    chat_room.add_user(bob)
+    chat_room.add_user(charlie)
+
+    alice.send_message("Hi everyone!")
+    bob.send_message("Hello Alice!")
+    charlie.send_message("Hey guys, what's up?")
+
+```
+
+代码解释：
+
+在上面的示例中，User 类表示同事类，ChatRoom 类表示中介者。
+
+每个 User 对象都有一个指向 ChatRoom 对象的引用，以便与中介者进行通信。
+
+当一个用户发送消息时，它会将消息发送到中介者，然后中介者会将消息广播给其他用户。
+
+这个简单的实现演示了中介者模式的基本思想，尽管它没有实现一个完整的中介者模式。实际上，中介者模式通常需要更复杂的实现，以便处理更复杂的交互关系。
 
 
 
