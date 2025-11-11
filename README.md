@@ -1719,7 +1719,372 @@ subject.state = 456
 最后，我们从主题的观察者列表中移除了一个观察者，并再次改变了主题的状态，这时只有一个观察者收到了通知。
 
 
+### 8.状态模式（State）
 
+状态模式（State）是一种行为型设计模式，它允许对象在不同的内部状态下改变其行为。在**状态模式中，一个对象可以有多个状态，每个状态都对应着一组不同的行为**。对象根据自身的状态，选择不同的行为。这种模式将状态抽象成独立的类，使得状态之间可以相互切换，而不影响对象的整体行为。
+
+状态模式由三个核心组件构成：
+
+环境（Context）：表示当前对象的状态，它维护一个对抽象状态类的引用，以便能够切换状态。
+
+抽象状态（State）：定义一个接口，用于封装与环境相关的行为。
+
+具体状态（ConcreteState）：实现抽象状态接口，实现与环境相关的行为。
+
+在状态模式中，当对象的状态发生变化时，它会将状态的处理委托给当前状态对象。状态对象会负责处理相关的操作，并且在必要时会将环境的状态切换到新的状态。
+
+状态模式的优缺点包括：
+
+将状态转换的逻辑封装在状态类中，使得状态之间的切换变得简单明了。
+
+增加新的状态非常容易，只需要增加新的状态类即可。
+
+可以消除大量的条件分支语句，使得代码更加清晰和易于维护。
+
+状态模式的缺点是，由于需要创建多个状态类，因此会增加系统的复杂度。另外，状态之间的转换也需要仔细设计，否则可能会导致系统的不稳定性。
+
+下面是一个简单的使用 Python 实现状态模式的例子。
+
+假设我们有一个电梯，它可以处于三种状态之一：开门状态、关门状态和运行状态。在每种状态下，电梯的行为不同。我们可以使用状态模式来管理电梯的不同状态，从而使电梯的行为更加清晰和易于维护。
+
+首先，我们需要定义一个抽象状态类 State，它包含一个抽象方法 handle，用于处理电梯在不同状态下的行为：
+
+```
+class State:
+    def handle(self):
+        pass
+```
+
+接下来，我们定义三个具体状态类 OpenState、CloseState 和 RunState，分别表示电梯的开门状态、关门状态和运行状态。这些类实现了抽象状态类中的 handle 方法：
+
+```
+class OpenState(State):
+    def handle(self):
+        print("Opening the door")
+
+class CloseState(State):
+    def handle(self):
+        print("Closing the door")
+
+class RunState(State):
+    def handle(self):
+        print("Running")
+```
+
+然后，我们定义一个环境类 Lift，它包含一个状态变量 state，表示当前电梯的状态。在 Lift 类中，我们定义了三个方法 open、close 和 run，分别用于切换电梯的状态：
+
+```
+class Lift:
+    def __init__(self):
+        self.state = None
+
+    def setState(self, state):
+        self.state = state
+
+    def open(self):
+        self.state.handle()
+
+    def close(self):
+        self.state.handle()
+
+    def run(self):
+        self.state.handle()
+```
+
+最后，我们可以使用这些类来模拟电梯的运行过程。例如，我们可以首先将电梯的状态设置为开门状态，然后依次执行关门和运行操作：
+
+```
+lift = Lift()
+lift.setState(OpenState())
+lift.open() # Opening the door
+
+lift.setState(CloseState())
+lift.close() # Closing the door
+
+lift.setState(RunState())
+lift.run() # Running
+```
+
+这样，我们就成功地使用状态模式来管理电梯的不同状态。在实际应用中，我们可以将更复杂的状态和行为加入到电梯系统中，从而使其更加灵活和易于扩展。
+
+
+### 9、策略模式（Strategy）
+
+策略模式（Strategy）是一种行为型设计模式，**它允许在运行时选择算法的不同实现方式**。该模式的基本思想是将算法封装在可互换的策略对象中，使得客户端能够动态地选择算法的实现方式。
+
+实现思路：
+
+在策略模式中，通常有一个上下文对象（Context），它持有一个或多个策略对象（Strategy），并将具体的任务委托给其中的某个策略对象来完成。
+
+策略对象之间通常是相互独立的，它们之间没有共享状态，客户端可以自由地选择不同的策略对象。
+
+优缺点：
+
+策略模式的优点是可以提高代码的可维护性和可扩展性，因为它**将算法的实现与上下文对象分离**，**使得修改或增加新的算法实现变得更加容易**。
+
+缺点是可能会增加类的数量，同时需要客户端显式地选择不同的策略对象，这可能会使代码变得更加复杂。
+
+下面是一个简单的 Python 实现示例：
+
+```
+# 1、定义策略接口：
+
+class SortStrategy:
+    def sort(self, data):
+        pass
+
+# 2、实现具体策略类：
+
+class QuickSort(SortStrategy):
+    def sort(self, data):
+        # 使用快速排序算法实现排序
+        pass
+
+class BubbleSort(SortStrategy):
+    def sort(self, data):
+        # 使用冒泡排序算法实现排序
+        pass
+
+# 3、定义上下文类：
+
+class SortContext:
+    def __init__(self):
+        self.strategy = None
+
+    def set_sort_strategy(self, strategy):
+        self.strategy = strategy
+
+    def sort_data(self, data):
+        self.strategy.sort(data)
+
+# 4、客户端选择算法实现方式：
+
+context = SortContext()
+data = [5, 1, 4, 2, 8]
+
+context.set_sort_strategy(QuickSort())
+context.sort_data(data)  # 使用快速排序算法实现排序
+
+context.set_sort_strategy(BubbleSort())
+context.sort_data(data)  # 使用冒泡排序算法实现排序
+
+```
+
+代码解释：
+
+在这个例子中，上下文类 SortContext 持有一个策略对象 SortStrategy，客户端通过调用上下文类提供的方法来设置不同的策略对象，从而选择不同的算法实现方式。
+
+同时，具体的算法实现方式被封装在具体的策略类 QuickSort 和 BubbleSort 中。
+
+
+### 10、模板方法模式（TemplateMethod）
+
+模板方法模式（Template Method）是一种行为设计模式，它**定义了一个算法的骨架，而将某些步骤的实现延迟到子类中**。**该模式主要用于在不改变算法结构的情况下重定义算法的某些步骤**，以适应不同的需求。
+
+模板方法模式由抽象类和具体子类组成。抽象类定义了一个算法的骨架，它包含若干个抽象方法和具体方法，其中抽象方法表示子类需要实现的步骤，具体方法则提供了默认实现。子类通过继承抽象类并实现其中的抽象方法来完成算法的实现。
+
+模板方法模式的优点包括：
+
+提高代码的复用性：模板方法将算法的核心部分封装在抽象类中，可以使多个子类共享相同的算法实现，避免重复编写相同的代码。
+
+提高代码的扩展性：通过将算法中的一部分步骤交由子类来实现，可以使算法更容易扩展和修改，使得系统更具灵活性和可维护性。
+
+符合开闭原则：模板方法模式通过将变化的部分延迟到子类中来实现算法的扩展和修改，同时保持算法的整体结构不变，符合开闭原则。
+
+模板方法模式的缺点包括：
+
+抽象类和具体子类之间的耦合度较高，一旦抽象类发生修改，所有的子类都需要进行相应的修改。
+
+可能会导致代码的复杂性增加，特别是在存在多个变化的步骤时，需要设计好抽象类和具体子类之间的交互关系，避免出现代码混乱和难以维护的情况。
+
+模板方法模式的实现需要抽象类和具体子类的参与，一般包括以下几个步骤：
+
+定义抽象类：定义一个抽象类作为算法的骨架，该抽象类中包含了算法的核心部分以及一些抽象方法，抽象方法表示算法中需要子类实现的具体步骤。
+
+实现具体子类：根据抽象类定义具体的子类，子类中实现了抽象方法，以完成算法的具体步骤。子类也可以实现一些钩子方法（Hook Method）以影响算法的执行。
+
+定义具体方法：抽象类中还可以包含一些具体方法，这些具体方法可以提供算法的默认实现，但也可以被具体子类覆盖。
+
+下面是一个简单的示例代码，实现了一个冲泡咖啡的模板方法模式：
+
+```
+# 抽象类，定义算法的骨架
+class CoffeeMaker:
+    def prepare(self):
+        self.boil_water()
+        self.brew()
+        self.pour_in_cup()
+        if self.customer_wants_condiments():
+            self.add_condiments()
+
+    def boil_water(self):
+        print("Boiling water")
+
+    def pour_in_cup(self):
+        print("Pouring into cup")
+
+    # 抽象方法，需要子类实现
+    def brew(self):
+        pass
+
+    # 钩子方法，影响算法的执行
+    def customer_wants_condiments(self):
+        return True
+
+    # 具体方法，提供默认实现
+    def add_condiments(self):
+        print("Adding sugar and milk")
+ 
+# 具体子类，实现抽象方法和钩子方法
+class Coffee(CoffeeMaker):
+    def brew(self):
+        print("Brewing coffee")
+
+    def customer_wants_condiments(self):
+        answer = input("Would you like sugar and milk with your coffee? (y/n)")
+        return answer.lower().startswith('y')
+ 
+# 使用具体子类冲泡咖啡
+if __name__ == '__main__':
+    coffee = Coffee()
+    coffee.prepare()
+```
+
+代码解释：
+
+在这个示例中，CoffeeMaker 类是一个抽象类，其中包含了 prepare 方法作为算法的骨架，以及 boil_water、brew、pour_in_cup、customer_wants_condiments 和 add_condiments 方法。
+
+其中，brew 方法为抽象方法，需要具体子类实现，而 customer_wants_condiments 方法为钩子方法，影响算法的执行。
+
+Coffee 类继承自 CoffeeMaker 类，并实现了 brew 和 customer_wants_condiments 方法，完成了算法的具体步骤。
+
+最后，通过 coffee.prepare() 方法调用算法的骨架，完成了冲泡咖啡的操作。
+
+
+### 11、访问者模式（Visitor）
+
+访问者模式（Visitor）是一种行为型设计模式，它可以**将算法与其所作用的对象分离开来**。这种模式允许你在不改变现有对象结构的情况下向对象结构中添加新的行为。
+
+实现思路：
+
+访问者模式的核心思想是：将算法封装到访问者对象中，然后将访问者对象传递给对象结构中的元素，以便这些元素可以调用访问者对象中的算法。
+
+访问者对象可以通过访问元素中的数据和操作来实现算法，从而避免了对元素结构的直接访问。
+
+访问者模式通常由以下几个角色组成：
+
+访问者（Visitor）：定义了用于访问元素的方法，这些方法通常以不同的重载形式出现，以便针对不同类型的元素采取不同的行为。
+
+具体访问者（ConcreteVisitor）：实现了访问者接口，提供了算法的具体实现。
+
+元素（Element）：定义了用于接受访问者的方法，这些方法通常以 accept() 的形式出现，以便元素可以将自己作为参数传递给访问者对象。
+
+具体元素（ConcreteElement）：实现了元素接口，提供了具体的数据和操作，同时也提供了接受访问者的方法。
+
+对象结构（Object Structure）：定义了元素的集合，可以提供一些方法以便访问者能够遍历整个集合。
+
+访问者模式的优缺点包括：
+
+可以将算法与其所作用的对象分离开来，避免了对元素结构的直接访问。
+
+在访问者中可以实现对元素数据和操作的访问和处理，从而可以方便地扩展新的操作和处理逻辑。
+
+可以方便地实现元素结构的复杂算法，而不需要修改元素结构本身。
+
+访问者模式的缺点是，它可能会导致访问者对象的复杂性增加。此外，它也可能会导致元素结构的扩展性变得比较差，因为每当添加一个新的元素类型时，都需要修改所有的访问者对象。
+
+下面是一个简单的访问者模式的 Python 实现：
+
+```
+from abc import ABC, abstractmethod
+
+# 抽象元素类
+class Element(ABC):
+    @abstractmethod
+    def accept(self, visitor):
+        pass
+
+# 具体元素类A
+class ElementA(Element):
+    def __init__(self, value):
+        self.value = value
+
+    def accept(self, visitor):
+        visitor.visit_element_a(self)
+
+# 具体元素类B
+class ElementB(Element):
+    def __init__(self, value):
+        self.value = value
+
+    def accept(self, visitor):
+        visitor.visit_element_b(self)
+
+# 抽象访问者类
+class Visitor(ABC):
+    @abstractmethod
+    def visit_element_a(self, element_a):
+        pass
+
+    @abstractmethod
+    def visit_element_b(self, element_b):
+        pass
+
+# 具体访问者类A
+class VisitorA(Visitor):
+    def visit_element_a(self, element_a):
+        print("VisitorA is visiting ElementA, value = ", element_a.value)
+
+    def visit_element_b(self, element_b):
+        print("VisitorA is visiting ElementB, value = ", element_b.value)
+
+# 具体访问者类B
+class VisitorB(Visitor):
+    def visit_element_a(self, element_a):
+        print("VisitorB is visiting ElementA, value = ", element_a.value)
+
+    def visit_element_b(self, element_b):
+        print("VisitorB is visiting ElementB, value = ", element_b.value)
+
+# 对象结构类
+class ObjectStructure:
+    def __init__(self):
+        self.elements = []
+
+    def attach(self, element):
+        self.elements.append(element)
+
+    def detach(self, element):
+        self.elements.remove(element)
+
+    def accept(self, visitor):
+        for element in self.elements:
+            element.accept(visitor)
+
+# 测试
+if __name__ == "__main__":
+    object_structure = ObjectStructure()
+    element_a = ElementA("A")
+    element_b = ElementB("B")
+    object_structure.attach(element_a)
+    object_structure.attach(element_b)
+    visitor_a = VisitorA()
+    visitor_b = VisitorB()
+    object_structure.accept(visitor_a)
+    object_structure.accept(visitor_b)
+```
+
+代码解释：
+
+以上代码中，我们首先定义了抽象元素类 Element，其中定义了一个 accept 方法，该方法接受一个访问者对象作为参数，并调用访问者对象的访问方法。然后，我们定义了两个具体元素类 ElementA 和 ElementB，它们分别实现了 accept 方法。
+
+接着，我们定义了抽象访问者类 Visitor，其中定义了两个访问方法 visit_element_a 和 visit_element_b，这两个方法分别用于访问具体的元素类。然后，我们定义了两个具体访问者类 VisitorA 和 VisitorB，它们分别实现了 visit_element_a 和 visit_element_b 方法。
+
+最后，我们定义了一个对象结构类 ObjectStructure，它包含了多个元素对象，并提供了 attach、detach 和 accept 方法，其中 accept 方法接受一个访问者对象作为参数，并调用元素对象的 accept 方法。在测试代码中，我们创建了一个对象结构，向其中添加了两个具体元素对象，并创建了两个具体访问者对象。
+
+然后，我们先使用 VisitorA 对象访问对象结构中的元素对象，再使用 VisitorB 对象访问对象结构中的元素对象。
+
+这样，访问者模式的基本结构就完成了。我们可以通过定义不同的具体访问者类来实现不同的操作，而不需要修改元素类。这样，访问者模式可以提高程序的灵活性和可扩展性。
 
 
 
